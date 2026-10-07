@@ -20,7 +20,8 @@ Application d'exemple en **AstroJS SSR** avec :
     longitude REAL NOT NULL
 - Ajoutez 4 enregistrements à la table clients (1pt)
 - Testez le code localement 
-- Versionnez le code dans GitHub en faisant attention aux fichiers et dossiers à exclure (2pts) 
+- Préparer un fichier .gitignore typique d'astro auquel ajouter ce qu'il faut (variable BDD) 
+- Versionnez le code dans GitHub en faisant  (2pts) 
 - Recharger le code sur Votre VPS depuis GitHub (1pts)
 - Transférez la BDD locale vers le VPS (1pts)
 - Préparer le fichier .env coté VPS (0.5pt)

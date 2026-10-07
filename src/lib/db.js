@@ -1,11 +1,14 @@
 import { Database } from "bun:sqlite";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
-
+import { dirname, join , resolve} from "node:path";
+import { mkdirSync } from "node:fs";  
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const dbPath = join(__dirname, import.meta.env.SQLITE_DB_PATH);
+const dbPath = resolve(
+  import.meta.env.SQLITE_DB_PATH || "./data/clients.db"
+);
+mkdirSync(dirname(dbPath), { recursive: true });
 
 const db = new Database(dbPath);
 
