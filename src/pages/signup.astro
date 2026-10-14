@@ -1,0 +1,68 @@
+---
+export const prerender = false;
+import "../styles/auth.css";
+import GoogleButton from "../components/GoogleButton.astro";
+
+if (Astro.locals.user) return Astro.redirect("/");
+---
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Créer un compte | Clients</title>
+</head>
+
+<body>
+  <form id="form">
+    <h1>Créer un compte</h1>
+    <p class="subtitle">Quelques informations pour commencer.</p>
+    <GoogleButton />
+    <p class="divider">ou</p>
+    <input name="name" placeholder="Nom" autocomplete="name" required />
+    <input name="email" type="email" placeholder="Email" autocomplete="email" required />
+    <input name="password" type="password" placeholder="Mot de passe (8 caractères min.)" autocomplete="new-password" minlength="8" required />
+    <input name="confirm" type="password" placeholder="Confirmer le mot de passe" autocomplete="new-password" minlength="8" required />
+    <p id="error"></p>
+    <button type="submit">Créer mon compte</button>
+    <p class="switch">Déjà un compte ? <a href="/login">Se connecter</a></p>
+  </form>
+
+  <script>
+    import { authClient } from "../lib/auth-client";
+
+    const form = document.querySelector<HTMLFormElement>("#form")!;
+    const button = form.querySelector("button")!;
+    const error = document.querySelector("#error")!;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const d = new FormData(form);
+      const password = d.get("password") as string;
+
+      if (password !== d.get("confirm")) {
+        error.textContent = "Les mots de passe ne correspondent pas.";
+        return;
+      }
+
+      button.disabled = true;
+      error.textContent = "";
+
+      const { error: err } = await authClient.signUp.email({
+        name: d.get("name") as string,
+        email: d.get("email") as string,
+        password,
+      });
+
+      if (err) {
+        error.textContent = err.message ?? "Erreur";
+        button.disabled = false;
+      } else {
+        window.location.href = "/";
+      }
+    });
+  </script>
+</body>
+</html>

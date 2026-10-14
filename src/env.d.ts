@@ -1,11 +1,7 @@
-/// <reference types="astro/client" />
+/// <reference path="../.astro/types.d.ts" />
 
 declare namespace App {
   interface Locals {
-    user?: {
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
+    user: import("better-auth").User | null;
   }
 }

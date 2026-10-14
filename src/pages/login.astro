@@ -1,0 +1,59 @@
+---
+export const prerender = false;
+import "../styles/auth.css";
+import GoogleButton from "../components/GoogleButton.astro";
+
+if (Astro.locals.user) return Astro.redirect("/");
+---
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Connexion | Clients</title>
+</head>
+
+<body>
+  <form id="form">
+    <h1>Connexion</h1>
+    <p class="subtitle">Connectez-vous pour accéder au tableau de bord.</p>
+    <GoogleButton />
+    <p class="divider">ou</p>
+    <input name="email" type="email" placeholder="Email" autocomplete="email" required />
+    <input name="password" type="password" placeholder="Mot de passe" autocomplete="current-password" required />
+    <p id="error"></p>
+    <button type="submit">Se connecter</button>
+    <p class="switch">Pas encore de compte ? <a href="/signup">Créer un compte</a></p>
+  </form>
+
+  <script>
+    import { authClient } from "../lib/auth-client";
+
+    const form = document.querySelector<HTMLFormElement>("#form")!;
+    const button = form.querySelector("button")!;
+    const error = document.querySelector("#error")!;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const d = new FormData(form);
+
+      button.disabled = true;
+      error.textContent = "";
+
+      const { error: err } = await authClient.signIn.email({
+        email: d.get("email") as string,
+        password: d.get("password") as string,
+      });
+
+      if (err) {
+        error.textContent = err.message ?? "Erreur";
+        button.disabled = false;
+      } else {
+        window.location.href = "/";
+      }
+    });
+  </script>
+</body>
+</html>
